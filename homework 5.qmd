@@ -1,0 +1,127 @@
+---
+title: "ST558 Homework 5"
+format: html
+editor: visual
+---
+
+## Task 1
+```{r}
+## Join via code provided in zip
+d1=read.table("student-mat.csv",sep=";",header=TRUE)
+d2=read.table("student-por.csv",sep=";",header=TRUE)
+
+d3=merge(d1,d2,by=c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason","nursery","internet"))
+print(nrow(d3))
+```
+
+```{r}
+library(tidyverse)
+math_data <- read_delim("student-mat.csv", delim = ";", col_names = TRUE)
+por_data <- read_delim("student-por.csv", delim = ";", col_names = TRUE)
+inner_join(math_data, por_data)  # does not print any rows
+```
+
+```{r}
+## This will be used in further steps
+combined_data <- inner_join(math_data, por_data, 
+                            by = c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason", "guardian", "traveltime", "studytime", "failures", "schoolsup", "famsup", "activities", "nursery", "higher", "internet", "romantic", "famrel", "freetime", "goout", "Dalc", "Walc", "health"))
+```
+
+```{r}
+## Changing variables of interest into factors
+math_data <- math_data |>
+  mutate(across(c("Pstatus", "Mjob", "Fjob", "internet"), as.factor))
+
+por_data <- por_data |>
+  mutate(across(c("Pstatus", "Mjob", "Fjob", "internet"), as.factor))
+
+combined_data <- combined_data |>
+  mutate(across(c("Pstatus", "Mjob", "Fjob", "internet"), as.factor))
+```
+
+## Task 2
+```{r}
+## one-way contingency table
+table(combined_data$internet, useNA = "always")
+```
+The number 48 indicates that 48 students do not have access to internet at home
+```{r}
+## two-way contingency table
+table(combined_data$Pstatus, combined_data$Mjob, useNA = "always")
+```
+The number 2 indicates that 2 students have parents who live apart where the mother works in healthcare
+```{r}
+## three-way contingency table
+table(combined_data$Fjob, combined_data$Mjob, combined_data$internet, useNA = "always")
+```
+The number 2 in the second row of the first table means that of students with no access to internet at home, 2 of them have a father who works in healthcare while also having a mother that works as a teacher
+
+```{r}
+## conditional two-way table using filter()
+table_no_internet <- combined_data |>
+  filter(internet == "no")
+
+table(table_no_internet$Pstatus, table_no_internet$Mjob, useNA = "always")
+```
+
+```{r}
+## sub-setting three-way contingency table to print two-way table
+three_way_table <- table(combined_data$Pstatus, combined_data$Mjob, combined_data$internet, useNA = "always")
+three_way_table[ , , "no"]
+```
+
+```{r}
+## two-way table using dplyr
+combined_data |>
+  group_by(Pstatus, Mjob) |>
+  summarize(count = n()) |>
+  pivot_wider(names_from = Mjob, values_from = count)
+```
+
+```{r}
+## stacked bar graph
+ggplot(data = combined_data, aes(x = internet, fill = Mjob)) +
+  geom_bar() +
+  labs(x = "Internet Accessability", y = "Count of mothers with each job", title = "Student's Mothers' Jobs based on Internet Accessability") +
+  scale_fill_discrete("Mother's Job")
+```
+
+```{r}
+## side-by-side bar graph
+ggplot(data = combined_data, aes(x = internet, fill = Mjob)) +
+  geom_bar(position = "dodge") +
+  labs(x = "Internet Accessability", y = "Count of mothers with each job", title = "Student's Mothers' Jobs based on Internet Accessability") +
+  scale_fill_discrete("Mother's Job")
+```
+
+```{r}
+## finding center & spread of numeric variables
+combined_data |>
+  summarize(across(c("G3.x", "G3.y", "absences.x"),
+                   list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
+                   .names = "{.fn}_{.col}"))
+```
+
+```{r}
+## finding center & spread of numeric variables while sub-setting for students with internet at home
+combined_data |>
+  filter(internet == "yes") |>
+  summarize(across(c("G3.x", "G3.y", "absences.x"),
+                   list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
+                   .names = "{.fn}_{.col}"))
+```
+
+```{r}
+## finding center & spread across a single grouping variable
+combined_data |>
+  group_by(internet) |>
+  summarize(across(c("G3.x", "G3.y", "absences.x"),
+                   list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
+                   .names = "{.fn}_{.col}"))
+```
+
+
+
+
+
+
