@@ -242,7 +242,7 @@ freetime, goout, Dalc, Walc, health, absences, G1, G2, G3)`</code></pre>
   &lt;NA&gt;           0      0     0        0       0    0</code></pre>
 </div>
 </div>
-<p>The number 1 in the first table means that of students with no access to internet at home, 2 of them have a father who works in healthcare while also having a mother that works as a teacher</p>
+<p>The number 2 in the second row of the first table means that of students with no access to internet at home, 2 of them have a father who works in healthcare while also having a mother that works as a teacher</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## conditional two-way table using filter()</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>table_no_internet <span class="ot">&lt;-</span> combined_data <span class="sc">|&gt;</span></span>
@@ -257,6 +257,7 @@ freetime, goout, Dalc, Walc, health, absences, G1, G2, G3)`</code></pre>
   &lt;NA&gt;       0      0     0        0       0    0</code></pre>
 </div>
 </div>
+<p>The above table shows that very few students without internet have parents who live apart.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## sub-setting three-way contingency table to print two-way table</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>three_way_table <span class="ot">&lt;-</span> <span class="fu">table</span>(combined_data<span class="sc">$</span>Pstatus, combined_data<span class="sc">$</span>Mjob, combined_data<span class="sc">$</span>internet, <span class="at">useNA =</span> <span class="st">"always"</span>)</span>
@@ -302,6 +303,7 @@ freetime, goout, Dalc, Walc, health, absences, G1, G2, G3)`</code></pre>
 </div>
 </div>
 </div>
+<p>The bar chart above shows that students without internet access typically have mothers who work from home or fll under the “other” category in terms of job.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="do">## side-by-side bar graph</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> internet, <span class="at">fill =</span> Mjob)) <span class="sc">+</span></span>
@@ -316,6 +318,271 @@ freetime, goout, Dalc, Walc, health, absences, G1, G2, G3)`</code></pre>
 </div>
 </div>
 </div>
+<p>The bar chart above shows that the number of students with stay at home mothers is quite close between those with and without internet despite there being many more students with internet.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="do">## finding center &amp; spread of numeric variables</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>combined_data <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">"G3.x"</span>, <span class="st">"G3.y"</span>, <span class="st">"absences.x"</span>),</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">"mean"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"sd"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  mean_G3.x sd_G3.x mean_G3.y sd_G3.y mean_absences.x sd_absences.x
+      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;
+1      11.0    4.30      12.9    2.89            5.41          7.84</code></pre>
+</div>
+</div>
+<p>This summary shows that the sd for final grades in math is noticeably higher than the sd for final grades in Portuguese. This means there are likely more students who both struggle and excel in the subject compared to Portuguese.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">## finding center &amp; spread of numeric variables while sub-setting for students with internet at home</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>combined_data <span class="sc">|&gt;</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(internet <span class="sc">==</span> <span class="st">"yes"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">"G3.x"</span>, <span class="st">"G3.y"</span>, <span class="st">"absences.x"</span>),</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">"mean"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"sd"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  mean_G3.x sd_G3.x mean_G3.y sd_G3.y mean_absences.x sd_absences.x
+      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;
+1      11.3    4.30      13.0    2.75            5.66          8.31</code></pre>
+</div>
+</div>
+<p>This summary shows that even when only looking at students with internet access, the sd for final grades in math is noticeably higher than the sd for final grades in Portuguese.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="do">## finding center &amp; spread across a single grouping variable</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>combined_data <span class="sc">|&gt;</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(internet) <span class="sc">|&gt;</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">"G3.x"</span>, <span class="st">"G3.y"</span>, <span class="st">"absences.x"</span>),</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">"mean"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"sd"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 7
+  internet mean_G3.x sd_G3.x mean_G3.y sd_G3.y mean_absences.x sd_absences.x
+  &lt;fct&gt;        &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;         &lt;dbl&gt;
+1 no            9.69    4.12      12.2    3.53            4.02          3.99
+2 yes          11.3     4.30      13.0    2.75            5.66          8.31</code></pre>
+</div>
+</div>
+<p>This summary shows that on average the final grades of students in both courses are higher when they have access to internet at home.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="do">## finding center &amp; spread across two grouping variables</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>combined_data <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Pstatus, Mjob) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">"G3.x"</span>, <span class="st">"G3.y"</span>, <span class="st">"absences.x"</span>),</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">list</span>(<span class="st">"mean"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="st">"sd"</span> <span class="ot">=</span> <span class="er">~</span> <span class="fu">sd</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.fn}_{.col}"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'Pstatus'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 8
+# Groups:   Pstatus [2]
+   Pstatus Mjob     mean_G3.x sd_G3.x mean_G3.y sd_G3.y mean_absences.x
+   &lt;fct&gt;   &lt;fct&gt;        &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;
+ 1 A       at_home       6      NA         11    NA                6   
+ 2 A       health       10       1.41      14.5   0.707           10   
+ 3 A       other        11.5     3.20      12.9   2.05            10.9 
+ 4 A       services     13       3.64      14.6   2.19             9.67
+ 5 A       teacher      13.2     5.06      13.2   2.99             8.75
+ 6 T       at_home       9.67    4.59      12.5   2.72             4.37
+ 7 T       health       12.7     3.90      14.0   2.47             4.39
+ 8 T       other        10.4     4.00      12.3   3.51             5.11
+ 9 T       services     11.8     4.78      12.8   2.59             5.35
+10 T       teacher      11.2     4.18      13.4   2.35             4.73
+# ℹ 1 more variable: sd_absences.x &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<p>This summary shows that regardless of parental cohabitation status, students typically have a higher final grade in math when their mother works a job.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="do">## correlation matrix of all numeric variables</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>combined_data <span class="sc">|&gt;</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(age, absences.x, absences.y, G1.x, G1.y, G2.x, G2.y, G3.x, G3.y) <span class="sc">|&gt;</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    age  absences.x  absences.y        G1.x        G1.y
+age         1.000000000  0.14392517  0.04733182 -0.11037935 -0.05054968
+absences.x  0.143925170  1.00000000  0.56381559 -0.06946116 -0.09247761
+absences.y  0.047331821  0.56381559  1.00000000 -0.08760610 -0.09864117
+G1.x       -0.110379348 -0.06946116 -0.08760610  1.00000000  0.59293522
+G1.y       -0.050549678 -0.09247761 -0.09864117  0.59293522  1.00000000
+G2.x       -0.186187399 -0.07580245 -0.12636236  0.86588796  0.54300736
+G2.y        0.029366456 -0.14516402 -0.12070727  0.59517224  0.88415041
+G3.x       -0.206031862 -0.02811847 -0.11664046  0.81859418  0.52288461
+G3.y       -0.009103257 -0.13572638 -0.07145201  0.54388734  0.82541432
+                  G2.x        G2.y        G3.x         G3.y
+age        -0.18618740  0.02936646 -0.20603186 -0.009103257
+absences.x -0.07580245 -0.14516402 -0.02811847 -0.135726385
+absences.y -0.12636236 -0.12070727 -0.11664046 -0.071452010
+G1.x        0.86588796  0.59517224  0.81859418  0.543887345
+G1.y        0.54300736  0.88415041  0.52288461  0.825414320
+G2.x        1.00000000  0.56521350  0.91357599  0.496032649
+G2.y        0.56521350  1.00000000  0.54545279  0.894309821
+G3.x        0.91357599  0.54545279  1.00000000  0.475956497
+G3.y        0.49603265  0.89430982  0.47595650  1.000000000</code></pre>
+</div>
+</div>
+<p>This summary shows that there is a high correlation between students who score well in the first period with the second period.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="do">## histograms</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G3.x, <span class="at">fill =</span> internet)) <span class="sc">+</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Final Math Grade"</span>, <span class="at">y =</span> <span class="st">"Number of Students"</span>, <span class="at">title =</span> <span class="st">"Distribution of Student Final Math Grades"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G3.y, <span class="at">fill =</span> internet)) <span class="sc">+</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Final Portuguese Grade"</span>, <span class="at">y =</span> <span class="st">"Number of Students"</span>, <span class="at">title =</span> <span class="st">"Distribution of Student Final Portuguese Grades"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These graphs show that students without internet access have no achieved the top final grades in math, but have in Portuguese.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="do">## kernel density</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G3.x, <span class="at">fill =</span> internet)) <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Final Math Grade"</span>, <span class="at">y =</span> <span class="st">"Number of Students"</span>, <span class="at">title =</span> <span class="st">"Density of Student Final Math Grades"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G3.y, <span class="at">fill =</span> internet)) <span class="sc">+</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Final Portuguese Grade"</span>, <span class="at">y =</span> <span class="st">"Number of Students"</span>, <span class="at">title =</span> <span class="st">"Density of Student Final Portuguese Grades"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-19-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These graphs show that students’ final Portuguese grades are less spread out than their final math grades.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="do">## boxplots</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G3.x, <span class="at">fill =</span> internet)) <span class="sc">+</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Final Math Grade"</span>, <span class="at">y =</span> <span class="st">"Number of Students"</span>, <span class="at">title =</span> <span class="st">"Boxplot of Student Final Math Grades"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G3.y, <span class="at">fill =</span> internet)) <span class="sc">+</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Final Portuguese Grade"</span>, <span class="at">y =</span> <span class="st">"Number of Students"</span>, <span class="at">title =</span> <span class="st">"Boxplot of Student Final Portuguese Grades"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-20-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These boxplots show that on average students with internet access have better final grades in both subjects.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="do">## scatterplot</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> absences.x, <span class="at">y =</span> G3.x, <span class="at">color =</span> internet)) <span class="sc">+</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Math Class Absenses"</span>, <span class="at">y =</span> <span class="st">"Final Math Grade"</span>, <span class="at">title =</span> <span class="st">"Number of Math Class Absenses vs Final Math Grade"</span>) <span class="sc">+</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G1.x, <span class="at">y =</span> G3.x, <span class="at">color =</span> internet)) <span class="sc">+</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"First Period Math Grade"</span>, <span class="at">y =</span> <span class="st">"Final Math Grade"</span>, <span class="at">title =</span> <span class="st">"First Period Math Grade vs Final Math Grade"</span>) <span class="sc">+</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The scatter plots show that there is a stronger positive linear trend between first period math grades and final math grades than math class absences and final math grades.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="do">## scatterplot with faceting</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> absences.x, <span class="at">y =</span> G3.x, <span class="at">color =</span> internet)) <span class="sc">+</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Math Class Absenses"</span>, <span class="at">y =</span> <span class="st">"Final Math Grade"</span>, <span class="at">title =</span> <span class="st">"Number of Math Class Absenses vs Final Math Grade"</span>) <span class="sc">+</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Pstatus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G1.x, <span class="at">y =</span> G3.x, <span class="at">color =</span> internet)) <span class="sc">+</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"First Period Math Grade"</span>, <span class="at">y =</span> <span class="st">"Final Math Grade"</span>, <span class="at">title =</span> <span class="st">"First Period Math Grade vs Final Math Grade"</span>) <span class="sc">+</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> Pstatus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-22-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These scatter plots show that parental cohabitation status does not have much impact on the conclusions made about the previous plots.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="do">## scatterplot with faceting with 2 categorical variables</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> absences.x, <span class="at">y =</span> G3.x, <span class="at">color =</span> internet)) <span class="sc">+</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Math Class Absenses"</span>, <span class="at">y =</span> <span class="st">"Final Math Grade"</span>, <span class="at">title =</span> <span class="st">"Number of Math Class Absenses vs Final Math Grade"</span>) <span class="sc">+</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(Mjob <span class="sc">~</span> Pstatus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> combined_data, <span class="fu">aes</span>(<span class="at">x =</span> G1.x, <span class="at">y =</span> G3.x, <span class="at">color =</span> internet)) <span class="sc">+</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"First Period Math Grade"</span>, <span class="at">y =</span> <span class="st">"Final Math Grade"</span>, <span class="at">title =</span> <span class="st">"First Period Math Grade vs Final Math Grade"</span>) <span class="sc">+</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(Mjob <span class="sc">~</span> Pstatus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="homework-5_files/figure-html/unnamed-chunk-23-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>These scatter plots show that there is a strong linear relationship between first period math grades and final math grades across students whose mothers have all types of jobs.</p>
 </section>
 
 </main>

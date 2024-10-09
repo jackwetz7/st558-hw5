@@ -45,11 +45,13 @@ combined_data <- combined_data |>
 table(combined_data$internet, useNA = "always")
 ```
 The number 48 indicates that 48 students do not have access to internet at home
+
 ```{r}
 ## two-way contingency table
 table(combined_data$Pstatus, combined_data$Mjob, useNA = "always")
 ```
 The number 2 indicates that 2 students have parents who live apart where the mother works in healthcare
+
 ```{r}
 ## three-way contingency table
 table(combined_data$Fjob, combined_data$Mjob, combined_data$internet, useNA = "always")
@@ -63,6 +65,7 @@ table_no_internet <- combined_data |>
 
 table(table_no_internet$Pstatus, table_no_internet$Mjob, useNA = "always")
 ```
+The above table shows that very few students without internet have parents who live apart.
 
 ```{r}
 ## sub-setting three-way contingency table to print two-way table
@@ -85,6 +88,7 @@ ggplot(data = combined_data, aes(x = internet, fill = Mjob)) +
   labs(x = "Internet Accessability", y = "Count of mothers with each job", title = "Student's Mothers' Jobs based on Internet Accessability") +
   scale_fill_discrete("Mother's Job")
 ```
+The bar chart above shows that students without internet access typically have mothers who work from home or fll under the "other" category in terms of job.
 
 ```{r}
 ## side-by-side bar graph
@@ -93,6 +97,7 @@ ggplot(data = combined_data, aes(x = internet, fill = Mjob)) +
   labs(x = "Internet Accessability", y = "Count of mothers with each job", title = "Student's Mothers' Jobs based on Internet Accessability") +
   scale_fill_discrete("Mother's Job")
 ```
+The bar chart above shows that the number of students with stay at home mothers is quite close between those with and without internet despite there being many more students with internet.
 
 ```{r}
 ## finding center & spread of numeric variables
@@ -101,6 +106,7 @@ combined_data |>
                    list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
                    .names = "{.fn}_{.col}"))
 ```
+This summary shows that the sd for final grades in math is noticeably higher than the sd for final grades in Portuguese. This means there are likely more students who both struggle and excel in the subject compared to Portuguese.
 
 ```{r}
 ## finding center & spread of numeric variables while sub-setting for students with internet at home
@@ -110,6 +116,7 @@ combined_data |>
                    list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
                    .names = "{.fn}_{.col}"))
 ```
+This summary shows that even when only looking at students with internet access, the sd for final grades in math is noticeably higher than the sd for final grades in Portuguese.
 
 ```{r}
 ## finding center & spread across a single grouping variable
@@ -119,6 +126,7 @@ combined_data |>
                    list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
                    .names = "{.fn}_{.col}"))
 ```
+This summary shows that on average the final grades of students in both courses are higher when they have access to internet at home.
 
 ```{r}
 ## finding center & spread across two grouping variables
@@ -128,6 +136,7 @@ combined_data |>
                    list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
                    .names = "{.fn}_{.col}"))
 ```
+This summary shows that regardless of parental cohabitation status, students typically have a higher final grade in math when their mother works a job.
 
 ```{r}
 ## correlation matrix of all numeric variables
@@ -135,9 +144,10 @@ combined_data |>
   select(age, absences.x, absences.y, G1.x, G1.y, G2.x, G2.y, G3.x, G3.y) |>
   cor()
 ```
+This summary shows that there is a high correlation between students who score well in the first period with the second period.
 
 ```{r}
-## histogram
+## histograms
 ggplot(data = combined_data, aes(x = G3.x, fill = internet)) +
   geom_histogram() +
   labs(x = "Final Math Grade", y = "Number of Students", title = "Distribution of Student Final Math Grades")
@@ -146,6 +156,7 @@ ggplot(data = combined_data, aes(x = G3.y, fill = internet)) +
   geom_histogram() +
   labs(x = "Final Portuguese Grade", y = "Number of Students", title = "Distribution of Student Final Portuguese Grades")
 ```
+These graphs show that students without internet access have no achieved the top final grades in math, but have in Portuguese.
 
 ```{r}
 ## kernel density
@@ -157,9 +168,10 @@ ggplot(data = combined_data, aes(x = G3.y, fill = internet)) +
   geom_density() +
   labs(x = "Final Portuguese Grade", y = "Number of Students", title = "Density of Student Final Portuguese Grades")
 ```
+These graphs show that students' final Portuguese grades are less spread out than their final math grades.
 
 ```{r}
-## boxplot
+## boxplots
 ggplot(data = combined_data, aes(x = G3.x, fill = internet)) +
   geom_boxplot() +
   labs(x = "Final Math Grade", y = "Number of Students", title = "Boxplot of Student Final Math Grades")
@@ -168,6 +180,7 @@ ggplot(data = combined_data, aes(x = G3.y, fill = internet)) +
   geom_boxplot() +
   labs(x = "Final Portuguese Grade", y = "Number of Students", title = "Boxplot of Student Final Portuguese Grades")
 ```
+These boxplots show that on average students with internet access have better final grades in both subjects.
 
 ```{r}
 ## scatterplot
@@ -181,6 +194,7 @@ ggplot(data = combined_data, aes(x = G1.x, y = G3.x, color = internet)) +
   labs(x = "First Period Math Grade", y = "Final Math Grade", title = "First Period Math Grade vs Final Math Grade") +
   geom_jitter(width = 0.2, alpha = 0.3)
 ```
+The scatter plots show that there is a stronger positive linear trend between first period math grades and final math grades than math class absences and final math grades.
 
 ```{r}
 ## scatterplot with faceting
@@ -196,6 +210,7 @@ ggplot(data = combined_data, aes(x = G1.x, y = G3.x, color = internet)) +
   geom_jitter(width = 0.2, alpha = 0.3) +
   facet_wrap(~ Pstatus)
 ```
+These scatter plots show that parental cohabitation status does not have much impact on the conclusions made about the previous plots. 
 
 ```{r}
 ## scatterplot with faceting with 2 categorical variables
@@ -211,3 +226,4 @@ ggplot(data = combined_data, aes(x = G1.x, y = G3.x, color = internet)) +
   geom_jitter(width = 0.2, alpha = 0.3) +
   facet_wrap(Mjob ~ Pstatus)
 ```
+These scatter plots show that there is a strong linear relationship between first period math grades and final math grades across students whose mothers have all types of jobs.
