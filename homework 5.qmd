@@ -120,8 +120,94 @@ combined_data |>
                    .names = "{.fn}_{.col}"))
 ```
 
+```{r}
+## finding center & spread across two grouping variables
+combined_data |>
+  group_by(Pstatus, Mjob) |>
+  summarize(across(c("G3.x", "G3.y", "absences.x"),
+                   list("mean" = ~ mean(.x, na.rm = TRUE), "sd" = ~ sd(.x, na.rm = TRUE)),
+                   .names = "{.fn}_{.col}"))
+```
 
+```{r}
+## correlation matrix of all numeric variables
+combined_data |>
+  select(age, absences.x, absences.y, G1.x, G1.y, G2.x, G2.y, G3.x, G3.y) |>
+  cor()
+```
 
+```{r}
+## histogram
+ggplot(data = combined_data, aes(x = G3.x, fill = internet)) +
+  geom_histogram() +
+  labs(x = "Final Math Grade", y = "Number of Students", title = "Distribution of Student Final Math Grades")
 
+ggplot(data = combined_data, aes(x = G3.y, fill = internet)) +
+  geom_histogram() +
+  labs(x = "Final Portuguese Grade", y = "Number of Students", title = "Distribution of Student Final Portuguese Grades")
+```
 
+```{r}
+## kernel density
+ggplot(data = combined_data, aes(x = G3.x, fill = internet)) +
+  geom_density() +
+  labs(x = "Final Math Grade", y = "Number of Students", title = "Density of Student Final Math Grades")
 
+ggplot(data = combined_data, aes(x = G3.y, fill = internet)) +
+  geom_density() +
+  labs(x = "Final Portuguese Grade", y = "Number of Students", title = "Density of Student Final Portuguese Grades")
+```
+
+```{r}
+## boxplot
+ggplot(data = combined_data, aes(x = G3.x, fill = internet)) +
+  geom_boxplot() +
+  labs(x = "Final Math Grade", y = "Number of Students", title = "Boxplot of Student Final Math Grades")
+
+ggplot(data = combined_data, aes(x = G3.y, fill = internet)) +
+  geom_boxplot() +
+  labs(x = "Final Portuguese Grade", y = "Number of Students", title = "Boxplot of Student Final Portuguese Grades")
+```
+
+```{r}
+## scatterplot
+ggplot(data = combined_data, aes(x = absences.x, y = G3.x, color = internet)) +
+  geom_point() +
+  labs(x = "Math Class Absenses", y = "Final Math Grade", title = "Number of Math Class Absenses vs Final Math Grade") +
+  geom_jitter(width = 0.2, alpha = 0.3)
+
+ggplot(data = combined_data, aes(x = G1.x, y = G3.x, color = internet)) +
+  geom_point() +
+  labs(x = "First Period Math Grade", y = "Final Math Grade", title = "First Period Math Grade vs Final Math Grade") +
+  geom_jitter(width = 0.2, alpha = 0.3)
+```
+
+```{r}
+## scatterplot with faceting
+ggplot(data = combined_data, aes(x = absences.x, y = G3.x, color = internet)) +
+  geom_point() +
+  labs(x = "Math Class Absenses", y = "Final Math Grade", title = "Number of Math Class Absenses vs Final Math Grade") +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  facet_wrap(~ Pstatus)
+
+ggplot(data = combined_data, aes(x = G1.x, y = G3.x, color = internet)) +
+  geom_point() +
+  labs(x = "First Period Math Grade", y = "Final Math Grade", title = "First Period Math Grade vs Final Math Grade") +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  facet_wrap(~ Pstatus)
+```
+
+```{r}
+## scatterplot with faceting with 2 categorical variables
+ggplot(data = combined_data, aes(x = absences.x, y = G3.x, color = internet)) +
+  geom_point() +
+  labs(x = "Math Class Absenses", y = "Final Math Grade", title = "Number of Math Class Absenses vs Final Math Grade") +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  facet_grid(Mjob ~ Pstatus)
+
+ggplot(data = combined_data, aes(x = G1.x, y = G3.x, color = internet)) +
+  geom_point() +
+  labs(x = "First Period Math Grade", y = "Final Math Grade", title = "First Period Math Grade vs Final Math Grade") +
+  geom_jitter(width = 0.2, alpha = 0.3) +
+  facet_wrap(Mjob ~ Pstatus)
+```
